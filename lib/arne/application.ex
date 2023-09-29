@@ -15,7 +15,10 @@ defmodule Arne.Application do
       # Start Finch
       {Finch, name: Arne.Finch},
       # Start the Endpoint (http/https)
-      ArneWeb.Endpoint
+      ArneWeb.Endpoint,
+      # Llama serving
+      {Nx.Serving, serving: Arne.Llm.serving(), name: ChatServing}
+
       # Start a worker by calling: Arne.Worker.start_link(arg)
       # {Arne.Worker, arg}
     ]
