@@ -7,27 +7,24 @@ defmodule ArneWeb.Demo do
     ~H"""
       <div class="flex flex-col items-center w-full">
         <h1 class="text-slate-900 font-extrabold text-3xl tracking-tight text-center">
-          Llama2
+          Arne Orakel!
         </h1>
-        <p class="mt-6 text-lg text-slate-600 text-center max-w-4xl mx-auto">
-          Powered by <a href="https://github.com/elixir-nx/bumblebee" class="font-mono font-medium text-sky-500">Bumblebee</a>,
-          an Nx/Axon library for pre-trained and transformer models with <a href="https://huggingface.co">🤗</a> integration.
-        </p>
+        <img src="/images/arne.png" class="object-cover h-96 w-96">
         <div class="mt-6 w-full mx-auto">
           <form phx-change="validate" phx-submit="generate" class="space-y-5 max-w-4xl mx-auto">
             <div>
-              <label for="prompt" class="block text-sm font-medium leading-6 text-gray-900">Prompt</label>
               <div class="mt-2">
                 <textarea
                   id="prompt"
                   name="prompt"
                   rows="4"
+                  placeholder="Spør Arne om hva som helst!"
                   class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 ><%= @prompt %></textarea>
               </div>
             </div>
             <button disabled={!!@output.loading} type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Generate
+              Still spørsmål!
               <.spinner :if={@output.loading} />
             </button>
             <p id="output" phx-update="stream" class="text-md py-5">
