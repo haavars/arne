@@ -7,9 +7,8 @@ defmodule ArneWeb.Demo do
     ~H"""
       <div class="flex flex-col items-center w-full">
         <h1 class="text-slate-900 font-extrabold text-3xl tracking-tight text-center">
-          Arne Orakel!
+          Elixir 🤗 Llama Demo
         </h1>
-        <img src="/images/arne.png" class="object-cover h-96 w-96">
         <div class="mt-6 w-full mx-auto">
           <form phx-change="validate" phx-submit="generate" class="space-y-5 max-w-4xl mx-auto">
             <div>
@@ -18,13 +17,13 @@ defmodule ArneWeb.Demo do
                   id="prompt"
                   name="prompt"
                   rows="4"
-                  placeholder="Spør Arne om hva som helst!"
+                  placeholder="What do Llamas like to eat?"
                   class="block w-full rounded-md border-0 p-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 ><%= @prompt %></textarea>
               </div>
             </div>
             <button disabled={!!@output.loading} type="submit" class="rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
-              Still spørsmål!
+              Ask the Llama
               <.spinner :if={@output.loading} />
             </button>
             <p id="output" phx-update="stream" class="text-md py-5">
@@ -60,7 +59,7 @@ defmodule ArneWeb.Demo do
      |> cancel_async(:output)
      |> start_async(:output, fn ->
        for {segment, index} <-
-             Stream.with_index(Nx.Serving.batched_run(ChatServing, prompt)) do
+             Stream.with_index(Nx.Serving.batched_run(ChatServing, prompt |> to_llama_prompt)) do
          send(parent, {:output, {segment, index}})
        end
      end)}
@@ -80,6 +79,17 @@ defmodule ArneWeb.Demo do
       <path d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z" fill="currentColor" />
       <path d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z" fill="currentFill" />
     </svg>
+    """
+  end
+
+  defp to_llama_prompt(input) do
+    """
+    <s>[INST] <<SYS>>
+    You are a helpful, respectful and honest assistant. Always answer as helpfully as possible, while being safe.  Your answers should not include any harmful, unethical, racist, sexist, toxic, dangerous, or illegal content. Please ensure that your responses are socially unbiased and positive in nature.
+    If a question does not make any sense, or is not factually coherent, explain why instead of answering something not correct. If you don't know the answer to a question, please don't share false information.
+    <</SYS>>
+    #{input}
+    [/INST]
     """
   end
 end
